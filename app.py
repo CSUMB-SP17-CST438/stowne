@@ -1,6 +1,7 @@
 import flask
 import requests
 import os
+import gettyApi
 
 
 app = flask.Flask(__name__)
@@ -8,7 +9,8 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def index():
-    return "hello sean"
+    json_body = gettyApi.getJson("cats")
+    return json_body["images"][0]["display_sizes"][0]["uri"]
     
 
 app.run(
