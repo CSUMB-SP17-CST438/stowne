@@ -9,7 +9,7 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def index():
-    json_body = gettyApi.getJson("cats")
+    json_body = gettyApi.getJson("dogs")
     return json_body["images"][0]["display_sizes"][0]["uri"]
     
 
