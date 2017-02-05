@@ -1,21 +1,38 @@
 import requests
 import json
+import random
 
 
-ApiKey = "8c4qkbna6f4qhzhrtvkghxa2"
-Secret = "SVfMs3NTrgnKDaZtW68EefNhJa3DNbDSHFNhtUcy3fMk7"
-url = 'https://api.gettyimages.com/v3/search/images?fields=id,title,thumb,referral_destinations&sort_order=best&phrase=cats'
+apiKey = "8c4qkbna6f4qhzhrtvkghxa2"
+secret = "SVfMs3NTrgnKDaZtW68EefNhJa3DNbDSHFNhtUcy3fMk7"
+
+# I don't like long lines
+url = 'https://api.gettyimages.com/'
+url += 'v3/search/images?fields=id,'
+url += 'title,thumb,referral_destin'
+url += 'ations&sort_order=best'
 
 headers = {
-    "Api-Key":"8c4qkbna6f4qhzhrtvkghxa2"
+    "Api-Key":apiKey
 }
 
-url = 'https://api.gettyimages.com/v3/search/images?fields=id,title,thumb,referral_destinations&sort_order=best'
-def appendSearchTermToUrl(searchTerm):
-    return url + "&phrase=" + searchTerm
+    
+# adds search phrase to url
+def appendSearchPhrase(searchPhrase):
+    return url + "&phrase=" + searchPhrase
 
-def getJson(searchTerm):
-    newUrl = appendSearchTermToUrl(searchTerm)
-    response = requests.get(newUrl, headers = headers)
-    json_body = response.json()
-    return json_body
+# selects an image at random from the ["image"] array
+# from between the indecis 0 and len(["image"])-1
+def chooseImageUri(json_body):
+    imageIndex = random.randint(0, len(json_body["images"]))
+    
+    return json_body["images"][imageIndex]["display_sizes"][0]["uri"]
+
+# for use outside this file, give a search term,
+# get an image uri
+def getImageUri(searchPhrase):
+    requestingFrom = appendSearchPhrase(searchPhrase)
+    response = requests.get(requestingFrom, headers = headers)
+    return chooseImageUri(response.json())
+    
+    

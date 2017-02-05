@@ -9,11 +9,17 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def index():
-    json_body = gettyApi.getJson("dogs")
-    return json_body["images"][0]["display_sizes"][0]["uri"]
+    tweet = "this is another tweet"
+    uri = gettyApi.getImageUri("cat")
+    return flask.render_template(
+        'imageAndTweet.html',
+        imageUri = uri,
+        tweet = tweet
+    )
     
 
 app.run(
    port=int(os.getenv('PORT', 8080)),
-   host=os.getenv('IP', '0.0.0.0')
+   host=os.getenv('IP', '0.0.0.0'),
+   debug=True
 )
