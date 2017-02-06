@@ -37,14 +37,14 @@ getty_api = gettyApi.GettyApi(
 @app.route('/')
 def index():
     
-    nextTweet = twitter_api.randomTweetAbout("cat")
-    nextImage = getty_api.randomPictureURLAbout("cat")
+    nextTweet = twitter_api.randomTweetAbout("earth porn")
+    nextImage = getty_api.randomPictureURLAbout("earth porn")
     
     return flask.render_template(
         "imageAndTweet.html",
-        imageUri =nextImage,
-        tweet    =nextTweet["text"],
-        author   =nextTweet["screen_name"]
+        imageUri = nextImage,
+        tweet = nextTweet["text"],
+        screen_name = nextTweet["screen_name"]
     )
     
 
