@@ -29,7 +29,6 @@ class TwitterApi:
         
     def test(self, searchPhrase):
         searchResults = self.search(searchPhrase)
-        print(json.dumps(searchResults["statuses"][0], indent = 5))
         
     def randomTweetAbout(self, searchPhrase):
         searchResults = self.search(searchPhrase)
