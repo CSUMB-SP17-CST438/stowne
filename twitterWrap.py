@@ -20,7 +20,7 @@ import os
 
 # Base URL for linking to tweets
 # the tweet id is appended to obtain the attribution link
-twitterComStatuses = "twitter.com/statuses/"
+twitterComStatuses = "https://twitter.com/statuses/"
 
 # Twitter limits tweets returned per search.
 twitterMaxPerPage = 100
