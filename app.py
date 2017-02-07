@@ -4,14 +4,23 @@
 
 import os
 import flask
+import random
 import gettyWrap
 import twitterWrap
 
 
 
 # Globals for theme selection
-twitterSearchPhrase = "motherearth"
-gettyImSearchPhrase = "mountain"
+twitterSearchPhrases = [
+    "motherearth",
+    "protect environment",
+    "clean energy"
+]
+gettyImSearchPhrases = [
+    "mountain",
+    "ocean",
+    "sunset"
+]
 
 # flask object that does some sort of magic
 superBitchenWebApp = flask.Flask(
@@ -21,8 +30,10 @@ superBitchenWebApp = flask.Flask(
 @superBitchenWebApp.route('/')
 def index():
     
-    nextTweet = twitterWrap.pickTweet(twitterSearchPhrase)
-    nextImage = gettyWrap.pickImage(gettyImSearchPhrase)
+    nextTwitterSearchPhraseIndex = random.randint(0, len(twitterSearchPhrases)-1)
+    nextGettyImSearchPhraseIndex = random.randint(0, len(gettyImSearchPhrases)-1)
+    nextTweet = twitterWrap.pickTweet(twitterSearchPhrases[nextTwitterSearchPhraseIndex])
+    nextImage = gettyWrap.pickImage(gettyImSearchPhrases[nextGettyImSearchPhraseIndex])
     
     return flask.render_template(
         "imageAndTweet.html",

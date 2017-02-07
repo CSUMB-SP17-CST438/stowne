@@ -5,56 +5,81 @@ import json
 import random
 
   
-"""
-apiKey = os.getenv("API_KEY")
-"""
 
-apiKey = "hj2v7u3jn846ejpkhup5kjzy"
-apiGettyimagesComV3SearchImages = 'https://api.gettyimages.com/v3/search/images'
+apiKey = os.getenv("GETTY_API_KEY")
 
 gettyRequestHeaders = {
     "Api-Key":apiKey
 }
 
-# getty restricts the results per page to 100 :/
-gettyMaxPerPage = 100
-
-# This is the highest page number allowed for a page size of 100.
-# Page number is determined by how many search hits there were and
-# the resultsPerPage parameter. 
-gettyMaxPageNumber = 45
-
-def buildURL(
-    searchPhrase,
-    sortOrder = "most_popular",
-    pageNumber=1,
-    pageSize=gettyMaxPerPage,
-    numberOfPeople="none",
-    orientations="Vertical"
-):
-    readyURL = apiGettyimagesComV3SearchImages
-    readyURL += "?phrase=" + str(searchPhrase)
-    readyURL += "&page=" + str(pageNumber)
-    readyURL += "&page_size=" + str(pageSize)
-    readyURL += "&orientations=" + str(orientations)
-    readyURL += "&number_of_people=" + str(numberOfPeople)
-    readyURL += "&sort_order=" + str(sortOrder)
-    return readyURL
+# I needed a way of easily manipulating the search url.
+class GettySearchURL:
     
+    def __init__(self, **searchParameters):
+        self.baseURL = 'https://api.gettyimages.com/v3/search/images?'
+        self.searchParameters = {}
+        self.setSearchParameters(**searchParameters)
+    
+    # For tweeking the search parameters. All matching keys are
+    # updated, non-matching keys are added to self.searchParameters,
+    # and keys not specified in the argument are unchanged.
+    def setSearchParameters(self, **searchParameters):
+        for parameter in searchParameters:
+            self.searchParameters[parameter] = searchParameters[parameter]
+        
+    # concatonates all the search parameters with getty specific syntax.
+    def getUrl(self):
+        
+        urlAppendage = ""
+        for parameter in self.searchParameters:
+            if self.searchParameters[parameter]:
+                if len(str(self.searchParameters[parameter])) >= 0:
+                    urlAppendage += parameter + "=" + str(self.searchParameters[parameter]) + "&"
+                    
+        return self.baseURL + urlAppendage[0:len(urlAppendage)-1]
+        
+    # clones this instance in such a way that altering the clone will not alter this instance.
+    def copy(self):
+        new = GettySearchURL()
+        for parameter in self.searchParameters:
+            new.searchParameters[parameter] = self.searchParameters[parameter]
+        return new
+    
+# Does a test request and inspects the meta data to see how
+# many pages are available with this url.
+def calculateMaxPageNumber(gettySearchURL):
+    
+    # for this gettySearchURL object as it is, the max page size is
+    # given by results/pageSize
+    copyUrl = gettySearchURL.copy()
+    copyUrl.setSearchParameters(page=1)
+    response = requests.get(copyUrl.getUrl(), headers = gettyRequestHeaders)
+    try: return int(int(response.json()["result_count"]) / int(copyUrl.searchParameters["page_size"]))
+    except: return 0
+    
+    
+# Tweeks some search parameters to match my theme, 
+# makes the get request to getty with a random page number
+# and returns the image uri.
 def pickImage(searchPhrase):
-    randomPageNumber = random.randint(0, gettyMaxPageNumber)
-    url = buildURL(searchPhrase, pageNumber = randomPageNumber)
-    searchResults = requests.get(url, headers = gettyRequestHeaders)
-    jsonBody = searchResults.json()
-    imageCount = len(jsonBody["images"])
-    randomImageIndex = random.randint(0, imageCount-1)
-    return jsonBody["images"][randomImageIndex]["display_sizes"][0]["uri"]
     
+    # uses page size of one because when page size is one,
+    # results_count and page count are the same. Makes it easy.
+    url = GettySearchURL(
+        number_of_people = "none",
+        orientations     = "Vertical",
+        page             = 1,
+        page_size        = 1,
+        phrase           = searchPhrase,
+        sort_order       = "most_popular"
+    )
     
+    maxPageNumber = calculateMaxPageNumber(url)
+    randomPageNumber = random.randint(0, maxPageNumber)
+    url.setSearchParameters(page=randomPageNumber)
     
-
+    print("\n\n"+url.getUrl()+"\n\n")
     
+    response = requests.get(url.getUrl(), headers = gettyRequestHeaders)
+    return response.json()["images"][0]["display_sizes"][0]["uri"]
     
-
- # https://api.gettyimages.com:443/v3/search/images?number_of_people=none&orientations=Vertical&page=100&page_size=100&phrase=mountain&sort_order=most_popular
- # api.gettyimages.com/v3/search/images?phrase=mountain&page=1&page_size=100&orientations=Vertical&number_of_people=none&sort_order=most_popular

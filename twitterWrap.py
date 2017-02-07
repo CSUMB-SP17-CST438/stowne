@@ -29,20 +29,11 @@ twitterMaxPerPage = 100
 # used somewhat like a queue.
 recentScreenNames = []
 
-"""
-consumer_key        = os.getenv("CONSUMER_KEY")
-consumer_key_secret = os.getenv("CONSUMER_KEY_SECRET")
-access_token        = os.getenv("ACCESS_TOKEN")
-access_token_secret = os.getenv("ACCESS_TOKEN_SECRET")
 
-"""
-
-
-""" DELETE FOR FINAL DEPLOYMENT """
-consumer_key        = 'KPWCE4qO3TKU2fIKYeacuZKAZ'
-consumer_key_secret = '7HIgkgBGPrSxy44j8E8DGRNBQE6A119XwVIF2HslPJaDAnEzwt'
-access_token        = '827358906426892288-lfA3YmDL7hamYcCN27Caui3HticmoPc'
-access_token_secret = 'EgtoCilWxy8OVVS5qfokqEW1pLVlXrnnQ3tQkbRqXKZ6D'
+consumer_key        = os.getenv("TWITTER_CONSUMER_KEY")
+consumer_key_secret = os.getenv("TWITTER_CONSUMER_KEY_SECRET")
+access_token        = os.getenv("TWITTER_ACCESS_TOKEN")
+access_token_secret = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 
 # tweepy authorization object.
 authorization = tweepy.OAuthHandler(
@@ -71,7 +62,8 @@ def pickTweet(searchPhrase):
         # get next tweet object from tweepy.
         nextTweet = twitterApi.search(
             q=searchPhrase, 
-            count=twitterMaxPerPage
+            count=twitterMaxPerPage,
+            lang='en'
         )[random.randint(0, twitterMaxPerPage-1)]
         
         # if screen name is already in the list, start over.
