@@ -7,7 +7,7 @@ import os
 
   
 
-apiKey = os.environ("GETTY_API_KEY")
+apiKey = os.getenv("GETTY_API_KEY")
 
 gettyRequestHeaders = {
     "Api-Key":apiKey

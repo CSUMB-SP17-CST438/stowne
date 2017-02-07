@@ -30,10 +30,10 @@ twitterMaxPerPage = 100
 recentScreenNames = []
 
 
-consumer_key        = os.environ("TWITTER_CONSUMER_KEY")
-consumer_key_secret = os.environ("TWITTER_CONSUMER_KEY_SECRET")
-access_token        = os.environ("TWITTER_ACCESS_TOKEN")
-access_token_secret = os.environ("TWITTER_ACCESS_TOKEN_SECRET")
+consumer_key        = os.getenv("TWITTER_CONSUMER_KEY")
+consumer_key_secret = os.getenv("TWITTER_CONSUMER_KEY_SECRET")
+access_token        = os.getenv("TWITTER_ACCESS_TOKEN")
+access_token_secret = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 
 # tweepy authorization object.
 authorization = tweepy.OAuthHandler(
