@@ -82,5 +82,8 @@ def pickImage(searchPhrase):
     print("\n\n"+url.getUrl()+"\n\n")
     
     response = requests.get(url.getUrl(), headers = gettyRequestHeaders)
-    return response.json()["images"][0]["display_sizes"][0]["uri"]
+    
+    # try again if failure
+    try: return response.json()["images"][0]["display_sizes"][0]["uri"]
+    except KeyError: return pickImage(searchPhrase)
     
